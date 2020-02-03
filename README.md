@@ -1,4 +1,5 @@
 
+  
 ## Disclaimer
 
 Ce projet a été construit et développé à partir du script python disponible ici : https://gist.github.com/stephanlascar/4634276.
@@ -33,7 +34,6 @@ Ce composant a été testé uniquement avec l'alarme **Somfy Protexiom 600 versi
 ```yaml
 protexiom:  
   url: !secret protexiom_url
-  activation_code: !secret protexiom_activation_code
   password: !secret protexiom_password
   codes:
     key_A1: !secret protexiom_key_A1
@@ -67,6 +67,16 @@ protexiom:
     key_F4: !secret protexiom_key_F4
     key_F5: !secret protexiom_key_F5
 ```
+
+## Fonctionnement du composant
+`Sensor.py` permet de récupérer via le script `Somfy.py` :
+ - L'état général de l'alarme
+ - L'état des différents éléments
+Et les stockent dans l'objet Hass.
+
+`Binary_sensor.py` permet de récupérer l'ensemble des états (ON/OFF) des éléments issus de `sensor.py`
+
+`alarm_control_panel.py` permet d'activer ou de désactiver l'alarme via Hass.
 
 > Le custom_component est configuré pour récupérer les états toutes les **2 minutes.**
 
