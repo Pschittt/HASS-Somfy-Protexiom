@@ -18,6 +18,7 @@ class SomfyException(Exception):
 class Somfy:
     def __init__(self, url, password, codes):
         ssl._create_default_https_context = ssl._create_unverified_context
+        # self.config = config
         self.url = url
         self.id = id
         self.password = password
@@ -36,6 +37,8 @@ class Somfy:
     def login(self):
         login_response = self.browser.open(self.url + "/m_login.htm")
         login_html = login_response.read()
+        # print(login_html)
+
         login_soup = self._beautiful_it_and_check_error(login_html)
         authentication_code = login_soup.find('form').find('table').findAll('tr')[5].findAll('b')[0].find(text=True)
 
@@ -136,20 +139,34 @@ class Somfy:
         
         extract_elements = re.compile('var\sitem_type\s+=\s(.*);\nvar\sitem_label\s+=\s(.*);\nvar\sitem_pause\s+=\s(.*);\nvar\selt_name\s+=\s(.*);\nvar\selt_code\s+=\s(.*);\nvar\selt_pile\s+=\s(.*);\nvar\selt_as\s+=\s(.*);\nvar\selt_maison\s+=\s(.*);\nvar\selt_onde\s+=\s(.*);\nvar\selt_porte\s+=\s(.*);\nvar\selt_zone\s+=\s(.*);', re.IGNORECASE).search(str(result))
                
-        elements = {"item_type":json.loads(extract_elements.group(1)), 
-        "item_label":json.loads(extract_elements.group(2)), 
-        "item_pause":json.loads(extract_elements.group(3)), 
-        "elt_name":json.loads(extract_elements.group(4)), 
-        "elt_code":json.loads(extract_elements.group(5)), 
-        "elt_pile":json.loads(extract_elements.group(6)), 
-        "elt_as":json.loads(extract_elements.group(7)), 
-        "elt_maison":json.loads(extract_elements.group(8)), 
-        "elt_onde":json.loads(extract_elements.group(9)), 
-        "elt_porte":json.loads(extract_elements.group(10)), 
-        "elt_zone":json.loads(extract_elements.group(11))
-        }
+        item_type = json.loads(extract_elements.group(1))
+        item_label = json.loads(extract_elements.group(2))
+        item_pause = json.loads(extract_elements.group(3))
+        elt_name = json.loads(extract_elements.group(4))
+        elt_code = json.loads(extract_elements.group(5)) 
+        elt_pile = json.loads(extract_elements.group(6))
+        elt_as = json.loads(extract_elements.group(7))
+        elt_maison = json.loads(extract_elements.group(8))
+        elt_onde = json.loads(extract_elements.group(9))
+        elt_porte = json.loads(extract_elements.group(10))
+        elt_zone = json.loads(extract_elements.group(11))
 
-        return elements
+        elements = {}
+        for x in range(len(elt_code)):
+            elements[elt_code[x]]  = { 
+                "item_type" : item_type[x], 
+                "item_label" : item_label[x], 
+                "item_pause" : item_pause[x],
+                "elt_name" : elt_name[x],
+                "elt_pile" : elt_pile[x],
+                "elt_as" : elt_as[x],
+                "elt_maison" : elt_maison[x],
+                "elt_onde" : elt_onde[x],
+                "elt_porte" : elt_porte[x],
+                "elt_zone" : elt_zone[x]
+            }
+
+        return  elements
 
     def _beautiful_it_and_check_error(self, html):
         soup = BeautifulSoup(html, "lxml")
@@ -169,4 +186,3 @@ class Somfy:
                 raise SomfyException("Mauvais login/password")
             if '(0x0903)' == error_code:
                 raise SomfyException("Droit d'acces insuffisant")
-                
