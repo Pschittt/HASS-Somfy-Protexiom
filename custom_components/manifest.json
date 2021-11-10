@@ -1,6 +1,7 @@
 {
 	"domain": "protexiom",
    	"name": "protexiom",
+	"version": "1.0",
 	"documentation": "",
 	"dependencies": [],
 	"codeowners": [],
