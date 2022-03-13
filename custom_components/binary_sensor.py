@@ -33,7 +33,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     add_entities(somfy_devices, True)
 
 
-class SomfyBinarySensor(BinarySensorDevice):
+class SomfyBinarySensor(BinarySensorDeviceEntity):
 
     def __init__(self, hass, somfy, somfy_device, deviceType):
         self.somfy = somfy
