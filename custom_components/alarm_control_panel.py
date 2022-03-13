@@ -70,7 +70,7 @@ def set_arm_state(state, hass, somfy, code=None):
         _LOGGER.debug("Error when trying to log out !")
 
 
-class SomfyAlarm(alarm.AlarmControlPanel):
+class SomfyAlarm(alarm.AlarmControlPanelEntity):
 
     def __init__(self, hass, controller):
         self._state = None
